@@ -7,19 +7,43 @@ import 'rxjs/add/operator/map'
 export class SpotifyService {
 
   artistas: any[] = [];
+
+  urlSpotify: string = 'https://api.spotify.com/v1/';
+
   constructor(public http: HttpClient) {
     console.log('servicio spotify listo');
   }
 
-  getArtistas(termino: string){
-    let url = `https://api.spotify.com/v1/search?query=${ termino }&type=track&market=US&limit=20`
+  private getHeaders(): HttpHeaders{
     let headers = new HttpHeaders({
-        'authorization': 'Bearer BQA0J8odqPs_Qvoqd4zbp68Pap7bnE-bc6oruPCO52IuqcGp404NBM7fxZw4oM3Ll37AaCQbUG3zDPw3UeA'
+        'authorization': 'Bearer BQAy_rLyIm-33DNosIiPiQRRe6hPpyxBdBIQ55FWV8AdYjhphPeagxAyEVJkCLsy6r9ZngfjV0606C3mY90'
+    });
+
+    return headers;
+  }
+
+  getArtista( id: string){
+    let url = `${ this.urlSpotify }artists/${ id }`
+
+
+    return this.http.get(url, {headers})
+            .map((resp:any) => {
+              console.log(resp);
+              this.artistas = resp.artists.items;
+              return this.artistas;
+            });
+  }
+
+  getArtistas(termino: string){
+    let url = `${ this.urlSpotify }search?query=${ termino }&type=artist&market=US&limit=20`
+    let headers = new HttpHeaders({
+        'authorization': 'Bearer BQAy_rLyIm-33DNosIiPiQRRe6hPpyxBdBIQ55FWV8AdYjhphPeagxAyEVJkCLsy6r9ZngfjV0606C3mY90'
     })
 
     return this.http.get(url, {headers})
             .map((resp:any) => {
-              this.artistas = resp.tracks.items;
+              console.log(resp);
+              this.artistas = resp.artists.items;
               return this.artistas;
             });
   }
